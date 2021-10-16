@@ -25,7 +25,7 @@ import java.util.List;
 public class Swagger2Config {
 
     //api接口包扫描路径
-    public static final String SWAGGER_SCAN_BASE_PACKAGE = "com.jinax.hospital_management_backend.Controller";
+    public static final String SWAGGER_SCAN_BASE_PACKAGE = "com.jinax.pm_backend.Controller";
 
     public static final String VERSION = "1.0.0";
 
@@ -44,8 +44,8 @@ public class Swagger2Config {
 
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("hospital management") //设置文档的标题
-                .description("hospital management API 接口文档") // 设置文档的描述
+                .title("pm_backend") //设置文档的标题
+                .description("pm_backend API 接口文档") // 设置文档的描述
                 .version(VERSION) // 设置文档的版本信息-> 1.0.0 Version information
                 .build();
     }
