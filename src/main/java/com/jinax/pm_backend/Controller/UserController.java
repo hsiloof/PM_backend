@@ -39,7 +39,7 @@ public class UserController {
     @ApiOperation("登录")
     @ResponseBody
     @PostMapping("/login")
-    public ResponseEntity<Map<String, String>> login(@RequestParam("identification") String identification,@RequestParam("password") String password){
+    public ResponseEntity<Map<String, String>> login(String identification,String password){
         LOGGER.info("get user, identification Id is: {}, pw is: {}",identification,password);
         String token = loginService.login(identification, password);
         if (token == null) {
@@ -54,7 +54,7 @@ public class UserController {
     @ApiOperation("注册")
     @ResponseBody
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestParam("identification") String identification,@RequestParam("password") String password){
+    public ResponseEntity<String> register(String identification,String password){
         LOGGER.info("get user, identification Id is: {}, pw is: {}",identification,password);
 //        MyUserDetails userDetails = (MyUserDetails) userDetailsService.loadUserByUsername(identification);
         return new ResponseEntity<String>("success",HttpStatus.OK);
