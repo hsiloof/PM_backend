@@ -2,11 +2,11 @@ server:
   port: 8085
 
 
-#spring:
-#  datasource:
-#    url: jdbc:mysql://112.126.65.41:3306/databaseLab2?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
-#    username: root
-#    password: initialPass
+spring:
+  datasource:
+    url: jdbc:mysql://1.117.51.92:3306/forum?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+    username: outer
+    password: XMGL601!fdu,
 
 jwt:
   tokenHeader: Authorization #JWT存储的请求头
