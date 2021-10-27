@@ -4,6 +4,8 @@ import com.jinax.pm_backend.Component.JwtAuthenticationTokenFilter;
 import com.jinax.pm_backend.Component.MyUserDetails;
 import com.jinax.pm_backend.Component.RestfulAccessDeniedHandler;
 import com.jinax.pm_backend.Entity.User;
+import com.jinax.pm_backend.Service.UserService;
+import com.jinax.pm_backend.Utils.UserRoleConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -28,11 +30,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(prePostEnabled=true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-//    private final UserService userService;
+    private final UserService userService;
 
     private final RestfulAccessDeniedHandler restfulAccessDeniedHandler;
 
-    public SecurityConfig(RestfulAccessDeniedHandler restfulAccessDeniedHandler) {
+    public SecurityConfig(UserService userService, RestfulAccessDeniedHandler restfulAccessDeniedHandler) {
+        this.userService = userService;
         this.restfulAccessDeniedHandler = restfulAccessDeniedHandler;
     }
 
@@ -58,6 +61,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS)//跨域请求会先进行一次options请求
                 .permitAll()
                 .antMatchers("/user/login")// 对登录注册要允许匿名访问
+                .permitAll()
+                .antMatchers("/user/register")
                 .permitAll()
 //                .antMatchers("/**")//测试时全部运行访问
 //                .permitAll()
@@ -101,15 +106,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // the name here is indeed identification
             @Override
             public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-                User user = new User("admin","123","user");
-
-//                User user = userService.findByIdentification(s);
-//                if (user != null) {
-//                    String role = user.getRole().name();
-//                    return new MyUserDetails(user,role);
-//                }
-//                throw new UsernameNotFoundException("用户名或密码错误");
-                return new MyUserDetails(user);
+                User user = userService.getUserByUserName(s);
+                if (user != null) {
+                    return new MyUserDetails(user);
+                }
+                throw new UsernameNotFoundException("用户名或密码错误");
             }
         };
     }

@@ -1,6 +1,7 @@
 package com.jinax.pm_backend.Component;
 
 import com.jinax.pm_backend.Entity.User;
+import com.jinax.pm_backend.Utils.UserRoleConverter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -21,12 +22,16 @@ public class MyUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singleton(new SimpleGrantedAuthority(user.getRole()));
+        return Collections.singleton(new SimpleGrantedAuthority(UserRoleConverter.getRole(user.getRole())));
+    }
+
+    public int getId(){
+        return user.getId();
     }
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return user.getPw();
     }
 
     /**

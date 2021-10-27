@@ -1,5 +1,7 @@
 package com.jinax.pm_backend.Service;
 
+import com.jinax.pm_backend.Component.CommonResult;
+import com.jinax.pm_backend.Entity.User;
 import com.jinax.pm_backend.Utils.JwtTokenUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,12 +33,12 @@ public class LoginService {
     /*
      * Created by macro on 2018/4/26.
      */
-    public String login(String identification, String password) {
+    public String login(String username, String password) {
         String token = null;
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(identification);
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
             if (!passwordEncoder.matches(password, userDetails.getPassword())) {
-                throw new BadCredentialsException("密码不正确");
+                throw new BadCredentialsException("用户名或密码错误");
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -46,4 +48,5 @@ public class LoginService {
         }
         return token;
     }
+
 }
