@@ -4,24 +4,24 @@ package com.jinax.pm_backend.Component;
  * @author : chara
  */
 public class CommonResult<T> {
-    private String code;
+    private Integer code;
     private T data;
     private String msg;
 
     public CommonResult() {
     }
 
-    public CommonResult(String code, T data, String msg) {
+    public CommonResult(Integer code, T data, String msg) {
         this.code = code;
         this.data = data;
         this.msg = msg;
     }
 
-    public String getCode() {
+    public Integer getCode() {
         return code;
     }
 
-    public void setCode(String code) {
+    public void setCode(Integer code) {
         this.code = code;
     }
 
@@ -42,10 +42,10 @@ public class CommonResult<T> {
     }
 
     public static <T> CommonResult<T> successResult(T data, String msg){
-        return new CommonResult<>("200",data,msg);
+        return new CommonResult<>(200,data,msg);
     }
 
     public static <T> CommonResult<T> failResult(T data, String msg){
-        return new CommonResult<>("500",data,msg);
+        return new CommonResult<>(500,data,msg);
     }
 }
