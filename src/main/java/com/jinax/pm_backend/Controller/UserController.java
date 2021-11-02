@@ -88,4 +88,18 @@ public class UserController {
         }
         return CommonResult.successResult(userById,"成功");
     }
+
+    @ApiOperation("更新用户信息")
+    @ResponseBody
+    @PutMapping("/user/update")
+    public CommonResult<User> updateUserInfos(User user){
+        LOGGER.info("updateUserInfos, user is {}",user);
+        User userUpdated = null;
+        try {
+            userUpdated = userService.updateUser(user);
+        } catch (InvalidUserException e) {
+            return CommonResult.failResult(null,"更新失败");
+        }
+        return CommonResult.successResult(userUpdated,"成功");
+    }
 }

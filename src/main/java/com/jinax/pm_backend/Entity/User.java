@@ -1,10 +1,15 @@
 package com.jinax.pm_backend.Entity;
 
 
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user")
+@DynamicUpdate
+@DynamicInsert
 public class User {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -91,4 +96,6 @@ public class User {
                 ", signature='" + signature + '\'' +
                 '}';
     }
+
+
 }

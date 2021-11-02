@@ -5,7 +5,6 @@ import com.jinax.pm_backend.Component.MyUserDetails;
 import com.jinax.pm_backend.Component.RestfulAccessDeniedHandler;
 import com.jinax.pm_backend.Entity.User;
 import com.jinax.pm_backend.Service.UserService;
-import com.jinax.pm_backend.Utils.UserRoleConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -31,11 +30,12 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
-
+    private final PasswordEncoder passwordEncoder;
     private final RestfulAccessDeniedHandler restfulAccessDeniedHandler;
 
-    public SecurityConfig(UserService userService, RestfulAccessDeniedHandler restfulAccessDeniedHandler) {
+    public SecurityConfig(UserService userService, PasswordEncoder passwordEncoder, RestfulAccessDeniedHandler restfulAccessDeniedHandler) {
         this.userService = userService;
+        this.passwordEncoder = passwordEncoder;
         this.restfulAccessDeniedHandler = restfulAccessDeniedHandler;
     }
 
@@ -64,8 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .permitAll()
                 .antMatchers("/user/register")
                 .permitAll()
-//                .antMatchers("/**")//测试时全部运行访问
-//                .permitAll()
+                .antMatchers("/**")//测试时全部运行访问
+                .permitAll()
                 .anyRequest()// 除上面外的所有请求全部需要鉴权认证
                 .authenticated();
         // 禁用缓存
@@ -80,23 +80,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(userDetailsService())
-                .passwordEncoder(passwordEncoder());
-    }
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        // no encryption
-        return new PasswordEncoder() {
-            @Override
-            public String encode(CharSequence charSequence) {
-                return charSequence.toString();
-            }
-
-            @Override
-            public boolean matches(CharSequence charSequence, String s) {
-                return s.equals(charSequence.toString());
-            }
-        };
+                .passwordEncoder(passwordEncoder);
     }
 
     @Bean

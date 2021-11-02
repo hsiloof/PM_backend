@@ -6,8 +6,8 @@ import com.jinax.pm_backend.Exception.InvalidUserException;
 import com.jinax.pm_backend.Repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.util.Optional;
 
@@ -18,9 +18,11 @@ import java.util.Optional;
 public class UserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     public User getUserById(int id){
@@ -38,16 +40,17 @@ public class UserService {
     }
 
     public User createUser(User user) throws InvalidUserException {
-        if(!verifyUser(user)){
+        if(!verifyCreateUser(user)){
             LOGGER.info("createUser failed, user before create : {}", user);
             throw new InvalidUserException("user invalid");//后续可能不抛异常
         }
+        user.setPw(passwordEncoder.encode(user.getPw()));
         user.setRole((short) 0);
         User saveUser = userRepository.save(user);
         LOGGER.info("createUser, user before create : {}, user after create : {}",user,saveUser);
         return saveUser;
     }
-    private boolean verifyUser(User user){
+    private boolean verifyCreateUser(User user){
         if(user.getUsername() == null || user.getUsername().equals("")){
             return false;
         }
@@ -60,16 +63,24 @@ public class UserService {
         return true;
     }
 
-    public User getUser(int id){
-        User user;
-        try{
-            user = userRepository.getOne(id);//该方法如果没找到会抛出异常
-            LOGGER.info("getUser success, id : {},user : {}",id, user);
-        }catch (Exception e){
-            LOGGER.info("getUser fail, id : {}",id);
-            return null;
+    public User updateUser(User user) throws InvalidUserException {
+        if(user.getId() == null || user.getId() < 0) {
+            throw new InvalidUserException("user invalid");//后续可能不抛异常
         }
-        return user;
+        User before = userRepository.getOne(user.getId());
+        if(user.getMail() != null){
+            before.setMail(user.getMail());
+        }
+        if(user.getSignature() != null){
+            before.setSignature(user.getSignature());
+        }
+        if(user.getPw() != null){
+            before.setPw(passwordEncoder.encode(user.getPw()));
+        }
+        User saveUser = userRepository.save(before);
+        LOGGER.info("updateUser, user after update : {}",saveUser);
+        return saveUser;
     }
+
 
 }
