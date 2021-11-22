@@ -5,11 +5,15 @@ import com.jinax.pm_backend.Exception.InvalidBlockException;
 import com.jinax.pm_backend.Repository.BlockRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class BlockService {
@@ -30,9 +34,11 @@ public class BlockService {
         List<Block> byOwnerId = blockRepository.getBlocksByOwnerId(ownerId);
         return byOwnerId;
     }
-    public List<Block> getBlockByPostId(int postId){
-        List<Block> byPostId = blockRepository.getBlocksByPostId(postId);
-        return byPostId;
+    public List<Block> getBlockByPostIdPaged(int postId,int page,int size){
+        Page<Block> byPostId = blockRepository.findAll(PageRequest.of(page,size));
+        List<Block> collect = byPostId.get().collect(Collectors.toList());
+        LOGGER.info("getBlockByPostIdPaged, postId : {}, page: {},size :{}, result:{}",postId,page,size,collect);
+        return collect;
     }
     public Block createBlock(Block block)throws InvalidBlockException {
         block.setIsDeleted((short) 0);

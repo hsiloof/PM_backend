@@ -1,5 +1,7 @@
 package com.jinax.pm_backend.Entity;
 
+import com.fasterxml.jackson.annotation.*;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.HashSet;
@@ -13,10 +15,15 @@ public class Post {
     private Integer id;
     @Column(name = "title", nullable = false)
     private String title;
-    @Column(name = "content_id", nullable = false)
-    private Integer contentId;
-    @Column(name = "owner_id", nullable = false)
-    private Integer ownerId;
+//    @Column(name = "content_id", nullable = false)
+//    private Integer contentId;
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "content_id",referencedColumnName = "id")
+    private Content content;
+    @JsonIgnore
+    @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
+    @JoinColumn(name = "owner_id",referencedColumnName = "id")
+    private User owner;
     @Column(name = "address", nullable = false)
     private String address;
     @Column(name = "create_time", nullable = false)
@@ -25,7 +32,12 @@ public class Post {
     private short isDeleted;
     @Column(name = "view_time", nullable = false)
     private int viewTime;
+    @JsonManagedReference
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinTable(name = "post_tag_relation",
+            joinColumns = {
+                @JoinColumn(name = "post_id",referencedColumnName = "id"),},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id",referencedColumnName = "id")})
     private Set<Tag> tags = new HashSet<>();
 
     public Integer getId() {
@@ -44,20 +56,24 @@ public class Post {
         this.title = title;
     }
 
-    public Integer getContentId() {
-        return contentId;
+    public Content getContent() {
+        return content;
     }
 
-    public void setContentId(Integer contentId) {
-        this.contentId = contentId;
+    public void setContent(Content content) {
+        this.content = content;
     }
 
-    public Integer getOwnerId() {
-        return ownerId;
+    public User getOwner() {
+        return owner;
     }
 
-    public void setOwnerId(Integer ownerId) {
-        this.ownerId = ownerId;
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public String getOwnerName() {
+        return owner.getUsername();
     }
 
     public String getAddress() {
@@ -92,9 +108,9 @@ public class Post {
         this.viewTime = viewTime;
     }
 
-    @JoinTable(name = "post_tag_relation",
-            joinColumns = { @JoinColumn(name = "id", referencedColumnName = "post_id") },
-            inverseJoinColumns = { @JoinColumn(name = "id", referencedColumnName = "tag_id") })
+//    @JoinTable(name = "post_tag_relation",
+//            joinColumns = { @JoinColumn(name = "id", referencedColumnName = "post_id") },
+//            inverseJoinColumns = { @JoinColumn(name = "id", referencedColumnName = "tag_id") })
     public Set<Tag> getTags(){
         return tags;
     }
@@ -118,28 +134,30 @@ public class Post {
     public Post() {
     }
 
-    public Post(Integer id, String title, Integer contentId, Integer ownerId, String address, Date createTime, short isDeleted, int viewTime) {
+    public Post(Integer id, String title, Content content, User owner, String address, Date createTime, short isDeleted, int viewTime, Set<Tag> tags) {
         this.id = id;
         this.title = title;
-        this.contentId = contentId;
-        this.ownerId = ownerId;
+        this.content = content;
+        this.owner = owner;
         this.address = address;
         this.createTime = createTime;
         this.isDeleted = isDeleted;
         this.viewTime = viewTime;
+        this.tags = tags;
     }
 
     @Override
-    public String toString(){
-        return "Post{"+
-                "id="+id+
-                ", title="+title+
-                ", contentId="+contentId+
-                ", ownerId="+ownerId+
-                ", address="+address+
-                ", createTime="+createTime.toString()+
-                ", isDeleted="+ isDeleted+
-                ", viewTime="+viewTime+
-                "}";
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", title='" + title + '\'' +
+                ", content=" + content +
+                ", ownerName='" + owner.getUsername() + '\'' +
+                ", address='" + address + '\'' +
+                ", createTime=" + createTime +
+                ", isDeleted=" + isDeleted +
+                ", viewTime=" + viewTime +
+                ", tags=" + tags +
+                '}';
     }
 }

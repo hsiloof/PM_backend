@@ -45,7 +45,7 @@ public class UserService {
             throw new InvalidUserException("user invalid");//后续可能不抛异常
         }
         user.setPw(passwordEncoder.encode(user.getPw()));
-        user.setRole((short) 0);
+        user.setRole((short) 1);
         User saveUser = userRepository.save(user);
         LOGGER.info("createUser, user before create : {}, user after create : {}",user,saveUser);
         return saveUser;

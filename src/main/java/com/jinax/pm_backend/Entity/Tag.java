@@ -1,5 +1,7 @@
 package com.jinax.pm_backend.Entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,7 +14,12 @@ public class Tag {
     private Integer id;
     @Column(name = "name", nullable = false)
     private String name;
-    @ManyToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy = "tags")
+    @ManyToMany(mappedBy = "tags")
+    @JsonBackReference
+//    @JoinTable(name = "post_tag_relation",
+//            joinColumns = {
+//                    @JoinColumn(name = "tag_id",referencedColumnName = "id"),},
+//            inverseJoinColumns = {@JoinColumn(name = "post_id",referencedColumnName = "id")})
     private Set<Post> posts=new HashSet<>();
 
     public Tag() {

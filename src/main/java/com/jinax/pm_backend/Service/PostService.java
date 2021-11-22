@@ -27,6 +27,14 @@ public class PostService {
         LOGGER.info("getPostById, id : {}, post : {}",id,post);
         return post;
     }
+
+    public Post getPostByIdNotDeleted(int id){
+        Optional<Post> byId = postRepository.getPostByIdAndIsDeletedEquals(id, (short) 0);
+        Post post = byId.orElse(null);
+        LOGGER.info("getPostByIdNotDeleted, id : {}, post : {}",id,post);
+        return post;
+    }
+
     public List<Post> getPostsByOwnerId(int ownerId){
         List<Post> byPoster = postRepository.getPostsByOwnerId(ownerId);
 //        LOGGER.info("getPostByPoster, poster : {}, post : {}",id,post);

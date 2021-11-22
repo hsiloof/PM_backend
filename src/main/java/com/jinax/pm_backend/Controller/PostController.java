@@ -1,6 +1,7 @@
 package com.jinax.pm_backend.Controller;
 
 import com.jinax.pm_backend.Component.CommonResult;
+import com.jinax.pm_backend.Entity.Block;
 import com.jinax.pm_backend.Entity.Post;
 import com.jinax.pm_backend.Service.BlockService;
 import com.jinax.pm_backend.Service.PostService;
@@ -30,10 +31,10 @@ public class PostController {
 
     @ApiOperation("获取帖子信息")
     @ResponseBody
-    @GetMapping("/post/{postId}")
+    @GetMapping("/{postId}")
     public CommonResult<Post> getPostInfos(@PathVariable("postId") Integer postId){
         LOGGER.info("getPostInfos, id is: {}",postId);
-        Post postById = postService.getPostById(postId);
+        Post postById = postService.getPostByIdNotDeleted(postId);
         if (postById==null){
             return CommonResult.failResult(null,"无该帖子");
         }
@@ -41,7 +42,7 @@ public class PostController {
     }
     @ApiOperation("获取一定点击量的帖子")
     @ResponseBody
-    @GetMapping("/post/{viewTime}")
+    @GetMapping("/view/{viewTime}")
     public CommonResult<List<Post>> getPostsByViewTime(@PathVariable("viewTime") int viewTime){
         LOGGER.info("getPostsByViewTime, viewTime is: {}",viewTime);
         List<Post> posts = postService.getPostsByViewTimeGreaterThanEqual(viewTime);
@@ -52,7 +53,7 @@ public class PostController {
     }
     @ApiOperation("获取指定用户的的帖子")
     @ResponseBody
-    @GetMapping("/post/{ownerId}")
+    @GetMapping("/owner/{ownerId}")
     public CommonResult<List<Post>> getPostsByOwnerId(@PathVariable("ownerId") int ownerId){
         LOGGER.info("getPostsByOwnerId, ownerId is: {}",ownerId);
         List<Post> posts = postService.getPostsByOwnerId(ownerId);
@@ -60,5 +61,17 @@ public class PostController {
             return CommonResult.failResult(null,"该用户不存在或未发过帖子");
         }
         return CommonResult.successResult(posts,"成功");
+    }
+
+    @ApiOperation("获取指定用户的的帖子")
+    @ResponseBody
+    @GetMapping("/answer/{postId}")
+    public CommonResult<List<Block>> getAnswersByPostIdPaged(@PathVariable("postId") int postId,int page,int size){
+        LOGGER.info("getAnswersByPostIdPaged, ownerId is: {}",postId);
+        List<Block> blocks = blockService.getBlockByPostIdPaged(postId,page,size);
+        if (blocks.size()<=0){
+            return CommonResult.failResult(null,"该用户不存在或未发过帖子");
+        }
+        return CommonResult.successResult(blocks,"成功");
     }
 }

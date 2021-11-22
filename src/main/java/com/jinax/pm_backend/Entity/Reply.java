@@ -1,37 +1,49 @@
 package com.jinax.pm_backend.Entity;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
+/**
+ * @author : chara
+ */
 @Entity
-@Table(name="block")
-public class Block {
+@Table(name="reply")
+public class Reply {
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Integer id;
     @Column(name = "post_id", nullable = false)
     private Integer postId;
-    @Column(name = "content", nullable = false)
-    private String content;
+    @Column(name = "block_id", nullable = false)
+    private Integer blockId;
     @JsonIgnore
     @OneToOne(fetch = FetchType.EAGER,cascade = CascadeType.ALL)
     @JoinColumn(name = "owner_id",referencedColumnName = "id")
     private User owner;
-
-    @Column(name = "address", nullable = false)
-    private String address;
+    @Column(name = "content", nullable = false)
+    private String content;
     @Column(name = "create_time", nullable = false)
     private Date createTime;
+    @Column(name = "address", nullable = false)
+    private String address;
     @Column(name = "is_deleted", nullable = false)
     private short isDeleted;
-    @OneToMany(targetEntity = Reply.class)
-    @JoinColumn(name = "block_id",referencedColumnName = "id")
-    private Set<Reply> replySet = new HashSet<>();
+
+    public Reply() {
+    }
+
+    public Reply(Integer id, Integer postId, Integer blockId, User owner, String content, Date createTime, String address, short isDeleted) {
+        this.id = id;
+        this.postId = postId;
+        this.blockId = blockId;
+        this.owner = owner;
+        this.content = content;
+        this.createTime = createTime;
+        this.address = address;
+        this.isDeleted = isDeleted;
+    }
 
     public Integer getId() {
         return id;
@@ -49,12 +61,12 @@ public class Block {
         this.postId = postId;
     }
 
-    public String getContent() {
-        return content;
+    public Integer getBlockId() {
+        return blockId;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setBlockId(Integer blocktId) {
+        this.blockId = blocktId;
     }
 
     public User getOwner() {
@@ -69,12 +81,13 @@ public class Block {
         return owner.getUsername();
     }
 
-    public String getAddress() {
-        return address;
+
+    public String getContent() {
+        return content;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public Date getCreateTime() {
@@ -85,6 +98,14 @@ public class Block {
         this.createTime = createTime;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public short getIsDeleted() {
         return isDeleted;
     }
@@ -93,40 +114,17 @@ public class Block {
         this.isDeleted = isDeleted;
     }
 
-    public Set<Reply> getReplySet() {
-        return replySet;
-    }
-
-    public void setReplySet(Set<Reply> replySet) {
-        this.replySet = replySet;
-    }
-
-    public Block() {
-
-    }
-
-    public Block(Integer id, Integer postId, String content, User owner, String address, Date createTime, short isDeleted, Set<Reply> replySet) {
-        this.id = id;
-        this.postId = postId;
-        this.content = content;
-        this.owner = owner;
-        this.address = address;
-        this.createTime = createTime;
-        this.isDeleted = isDeleted;
-        this.replySet = replySet;
-    }
-
     @Override
     public String toString() {
-        return "Block{" +
+        return "Reply{" +
                 "id=" + id +
                 ", postId=" + postId +
-                ", content='" + content + '\'' +
+                ", blockId=" + blockId +
                 ", ownerName=" + getOwnerName() +
-                ", address='" + address + '\'' +
+                ", content='" + content + '\'' +
                 ", createTime=" + createTime +
+                ", address='" + address + '\'' +
                 ", isDeleted=" + isDeleted +
-                ", replySet=" + replySet +
                 '}';
     }
 }
