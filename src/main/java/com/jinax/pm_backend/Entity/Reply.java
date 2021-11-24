@@ -26,22 +26,37 @@ public class Reply {
     private String content;
     @Column(name = "create_time", nullable = false)
     private Date createTime;
-    @Column(name = "address", nullable = false)
-    private String address;
+    @Column(name = "longitude", nullable = false)
+    private Double longitude;
+    @Column(name = "latitude", nullable = false)
+    private Double latitude;
+    @Column(name = "city")
+    private String city;
+    @Column(name = "district")
+    private String district;
+    @Column(name = "province")
+    private String province;
+    @Column(name = "street")
+    private String street;
     @Column(name = "is_deleted", nullable = false)
     private short isDeleted;
 
     public Reply() {
     }
 
-    public Reply(Integer id, Integer postId, Integer blockId, User owner, String content, Date createTime, String address, short isDeleted) {
+    public Reply(Integer id, Integer postId, Integer blockId, User owner, String content, Date createTime, Double longitude, Double latitude, String city, String district, String province, String street, short isDeleted) {
         this.id = id;
         this.postId = postId;
         this.blockId = blockId;
         this.owner = owner;
         this.content = content;
         this.createTime = createTime;
-        this.address = address;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.city = city;
+        this.district = district;
+        this.province = province;
+        this.street = street;
         this.isDeleted = isDeleted;
     }
 
@@ -98,12 +113,52 @@ public class Reply {
         this.createTime = createTime;
     }
 
-    public String getAddress() {
-        return address;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
     }
 
     public short getIsDeleted() {
@@ -122,8 +177,13 @@ public class Reply {
                 ", blockId=" + blockId +
                 ", ownerName=" + getOwnerName() +
                 ", content='" + content + '\'' +
+                ", longitude='" + longitude +
+                ", latitude='" + latitude +
+                ", city='" + city +
+                ", district='" + district +
+                ", province='" + province +
+                ", street='" + street + '\'' +
                 ", createTime=" + createTime +
-                ", address='" + address + '\'' +
                 ", isDeleted=" + isDeleted +
                 '}';
     }

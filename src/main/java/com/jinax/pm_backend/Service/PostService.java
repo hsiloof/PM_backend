@@ -9,6 +9,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -40,10 +41,10 @@ public class PostService {
 //        LOGGER.info("getPostByPoster, poster : {}, post : {}",id,post);
         return byPoster;
     }
-    public List<Post> getPostsByAddress(String address){
-        List<Post> byAddress = postRepository.getPostsByAddress(address);
-        return byAddress;
-    }
+//    public List<Post> getPostsByAddress(String address){
+//        List<Post> byAddress = postRepository.getPostsByAddress(address);
+//        return byAddress;
+//    }
     public List<Post> getPostsByViewTimeGreaterThanEqual(int viewTime){
         List<Post> byViews = postRepository.getPostsByViewTimeGreaterThanEqual(viewTime);
         return byViews;
@@ -51,6 +52,7 @@ public class PostService {
     public Post creatPost(Post post) throws InvalidPostException{
         post.setIsDeleted((short) 0);
         post.setCreateTime(new Date());
+        post.setViewTime(0);
         Post savePost = postRepository.save(post);
         LOGGER.info("createPost, post before create : {}, post after create : {}",post,savePost);
         return savePost;

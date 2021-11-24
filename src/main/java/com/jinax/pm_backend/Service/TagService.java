@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class TagService {
@@ -21,5 +24,26 @@ public class TagService {
         Tag tag = byId.orElse(null);
         LOGGER.info("getTagById, id : {}, tag : {}",id,tag);
         return tag;
+    }
+    public Set<Tag> createTags(Set<Tag> tags){
+        Set<Tag> tagSet = new HashSet<>();
+        for (Tag tag:tags){
+            Optional<Tag> byName=tagRepository.getTagByNameEquals(tag.getName());
+            Tag createdTag = byName.orElse(null);
+            if (createdTag==null){
+                createdTag = tagRepository.save(tag);
+            }
+            tagSet.add(createdTag);
+//            try {
+//
+//            }catch (Exception e){
+//                System.out.println(tag);
+//
+//                LOGGER.info(tag.getName()+ "is existed");
+//            }finally {
+//                tagSet.add(createdTag);
+//            }
+        }
+        return tagSet;
     }
 }
