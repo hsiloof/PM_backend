@@ -76,6 +76,19 @@ public class PostController {
         return CommonResult.successResult(posts,"成功");
     }
 
+    @ApiOperation("获取指定用户回复的的帖子")
+    @ResponseBody
+    @GetMapping("/reply/{replierId}")
+    public CommonResult<List<Post>> getPostsByReplierId(@PathVariable("replierId") int replierId){
+        LOGGER.info("getPostsByReplierId, ownerId is: {}",replierId);
+        List<Post> posts = postService.getPostsByReplierId(replierId);
+        if (posts.size()<=0){
+            return CommonResult.failResult(null,"该用户不存在或未回复过帖子");
+        }
+        return CommonResult.successResult(posts,"成功");
+    }
+
+
     @ApiOperation("获取指定用户的的帖子")
     @ResponseBody
     @GetMapping("/answer/{postId}")

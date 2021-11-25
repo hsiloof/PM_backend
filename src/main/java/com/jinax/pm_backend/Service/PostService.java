@@ -49,6 +49,12 @@ public class PostService {
         List<Post> byViews = postRepository.getPostsByViewTimeGreaterThanEqual(viewTime);
         return byViews;
     }
+
+    public List<Post> getPostsByReplierId(int replierId){
+        List<Post> postsByReplierIdEquals = postRepository.getPostsByReplierIdEquals(replierId);
+        return postsByReplierIdEquals;
+    }
+
     public Post creatPost(Post post) throws InvalidPostException{
         post.setIsDeleted((short) 0);
         post.setCreateTime(new Date());

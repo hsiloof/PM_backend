@@ -35,7 +35,7 @@ public class BlockService {
         return byOwnerId;
     }
     public List<Block> getBlockByPostIdPaged(int postId,int page,int size){
-        Page<Block> byPostId = blockRepository.findAll(PageRequest.of(page,size));
+        Page<Block> byPostId = blockRepository.findAllByPostIdEquals(postId,PageRequest.of(page,size));
         List<Block> collect = byPostId.get().collect(Collectors.toList());
         LOGGER.info("getBlockByPostIdPaged, postId : {}, page: {},size :{}, result:{}",postId,page,size,collect);
         return collect;
