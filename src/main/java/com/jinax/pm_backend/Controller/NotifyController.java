@@ -25,24 +25,25 @@ public class NotifyController {
 
     @ApiOperation("获取未读通知")
     @ResponseBody
-    @GetMapping("/unread/{id}")
-    public CommonResult<List<Notify>> getNotifiesByUserIdAndUnread(@PathVariable("id") int userId){
-        List<Notify> notifies = notifyService.getNotifiesByOwnerIdAndNotRead(userId);
+    @GetMapping("/unread")
+    public CommonResult<List<Notify>> getNotifiesByUserIdAndUnread(@RequestParam int id){
+        List<Notify> notifies = notifyService.getNotifiesByOwnerIdAndNotRead(id);
         return CommonResult.successResult(notifies,"获取成功");
     }
     //
     @ApiOperation("获取已读通知")
     @ResponseBody
-    @GetMapping("/read/{id}")
-    public CommonResult<List<Notify>> getNotifiesByUserIdAndRead(@PathVariable("id") int userId){
-        List<Notify> notifies = notifyService.getNotifiesByOwnerIdAndHasRead(userId);
+    @GetMapping("/read")
+    public CommonResult<List<Notify>> getNotifiesByUserIdAndRead(@RequestParam int id){
+        List<Notify> notifies = notifyService.getNotifiesByOwnerIdAndHasRead(id);
         return CommonResult.successResult(notifies,"获取成功");
     }
     @ApiOperation("获取未读通知")
     @ResponseBody
-    @GetMapping("/unreadNum/{id}")
-    public CommonResult<Integer> getNotifiesNumByUserIdAndRead(@PathVariable("id") int userId){
-        Integer notifiesNum = notifyService.getNumOfUnreadNotifies(userId);
+    @GetMapping("/unreadNum")
+
+    public CommonResult<Integer> getNotifiesNumByUserIdAndRead(@RequestParam int id){
+        Integer notifiesNum = notifyService.getNumOfUnreadNotifies(id);
         return CommonResult.successResult(notifiesNum,"获取成功");
     }
 
