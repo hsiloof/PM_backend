@@ -32,14 +32,16 @@ public class PostController {
     private final TagService tagService;
     private final ContentService contentService;
     private final UserService userService;
+    private final NotifyService notifyService;
 
-    public PostController(PostService postService, BlockService blockService, ReplyService replyService,TagService tagService,ContentService contentService,UserService userService) {
+    public PostController(PostService postService, BlockService blockService, ReplyService replyService, TagService tagService, ContentService contentService, UserService userService, NotifyService notifyService) {
         this.postService = postService;
         this.blockService = blockService;
         this.replyService = replyService;
         this.tagService = tagService;
         this.contentService = contentService;
-        this.userService=userService;
+        this.userService = userService;
+        this.notifyService = notifyService;
     }
 
     @ApiOperation("获取帖子信息")
@@ -132,6 +134,7 @@ public class PostController {
             post.setLatitude(createPostParam.getLatitude());
             post.setOwner(user);
             Post createdPost = postService.creatPost(post);
+
         }catch (InvalidPostException e){
             return CommonResult.failResult(null,"发帖失败");
         }
@@ -155,6 +158,14 @@ public class PostController {
             block.setContent(createBlockParam.getContent());
             block.setOwner(user);
             Block createdPost = blockService.createBlock(block);
+
+            Post post = postService.getPostById(createdPost.getPostId());
+
+            Notify notify = new Notify();
+            notify.setPostId(post.getId());
+            notify.setOwnerId(post.getOwner().getId());
+            notifyService.createNotify(notify);
+
         }catch (InvalidBlockException e){
             return CommonResult.failResult(null,"盖楼失败");
         }
@@ -179,9 +190,19 @@ public class PostController {
             reply.setOwner(user);
             reply.setBlockId(createReplyParam.getBlock_id());
             Reply createdReply = replyService.createReply(reply);
+
+            Block block = blockService.getBlockById(createReplyParam.getBlock_id());
+
+            Notify notify = new Notify();
+            notify.setOwnerId(block.getOwner().getId());
+            notify.setPostId(createReplyParam.getPost_id());
+            notify.setBlockId(block.getId());
+            notifyService.createNotify(notify);
+
         }catch (InvalidReplyException e){
             return CommonResult.failResult(null,"盖楼失败");
         }
         return CommonResult.successResult(null,"盖楼成功");
     }
+
 }
