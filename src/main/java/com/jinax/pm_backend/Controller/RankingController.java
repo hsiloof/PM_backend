@@ -3,6 +3,7 @@ package com.jinax.pm_backend.Controller;
 import com.jinax.pm_backend.Component.CommonResult;
 import com.jinax.pm_backend.Entity.Post;
 import com.jinax.pm_backend.Entity.Tag;
+import com.jinax.pm_backend.Result.GetTopTagResult;
 import com.jinax.pm_backend.Service.PostService;
 import com.jinax.pm_backend.Service.TagService;
 import io.swagger.annotations.Api;
@@ -47,7 +48,7 @@ public class RankingController {
     @ApiOperation("获取的帖子")
     @ResponseBody
     @GetMapping("/tag")
-    public CommonResult<Map<Tag,Long>> getTopTags(){
+    public CommonResult<List<GetTopTagResult>> getTopTags(){
         return CommonResult.successResult(tagService.getTopTags(),"操作成功");
     }
 

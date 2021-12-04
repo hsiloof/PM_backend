@@ -54,15 +54,10 @@ public class TagService {
         return tagRepository.getTagsByNameLike("%"+keyword+"%");
     }
 
-    public Map<Tag,Long> getTopTags() {
+    public List<GetTopTagResult> getTopTags() {
         Query nativeQuery = entityManager.createNativeQuery("select name,tic.id as id,tic.count as count from tag left join (select tag_id as id,count(*) as count from post_tag_relation group by tag_id) as tic on tag.id = tic.id order by tic.count limit 20");
         nativeQuery.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.aliasToBean(GetTopTagResult.class));
         List<GetTopTagResult> topTags = nativeQuery.getResultList();
-        Map<Tag,Long> result = new HashMap<>();
-        for(GetTopTagResult line : topTags){
-            Tag tag = new Tag(line.getId(),line.getName());
-            result.put(tag,line.getCount().longValue());
-        }
-        return result;
+        return topTags;
     }
 }
