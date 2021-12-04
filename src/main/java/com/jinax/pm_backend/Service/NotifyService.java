@@ -7,6 +7,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -51,5 +52,10 @@ public class NotifyService {
         Notify saveNotify=notifyRepository.save(byId);
         LOGGER.info("updateNotify, notify after update : {}",saveNotify);
         return saveNotify;
+    }
+
+    private void change(List<Notify> list){
+        ArrayList<Notify> list1 = new ArrayList<>(list);
+
     }
 }

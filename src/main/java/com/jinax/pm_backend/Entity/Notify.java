@@ -16,16 +16,22 @@ public class Notify {
     private Integer ownerId;
     @Column(name = "is_read", nullable = false)
     private Short isRead;
+    @Column(name = "respondent",nullable = false)
+    private String respondent;
+    @Column(name = "post_title",nullable = false)
+    private String postTitle;
 
     public Notify() {
     }
 
-    public Notify(Integer id, Integer postId, Integer blockId, Integer ownerId, Short isRead) {
+    public Notify(Integer id, Integer postId, Integer blockId, Integer ownerId, Short isRead, String respondent, String postTitle) {
         this.id = id;
         this.postId = postId;
         this.blockId = blockId;
         this.ownerId = ownerId;
         this.isRead = isRead;
+        this.respondent = respondent;
+        this.postTitle = postTitle;
     }
 
     public Integer getId() {
@@ -68,6 +74,22 @@ public class Notify {
         this.isRead = isRead;
     }
 
+    public String getRespondent() {
+        return respondent;
+    }
+
+    public void setRespondent(String respondent) {
+        this.respondent = respondent;
+    }
+
+    public String getPostTitle() {
+        return postTitle;
+    }
+
+    public void setPostTitle(String postTitle) {
+        this.postTitle = postTitle;
+    }
+
     @Override
     public String toString() {
         return "Notify{" +
@@ -76,6 +98,8 @@ public class Notify {
                 ", blockId=" + blockId +
                 ", ownerId=" + ownerId +
                 ", isRead=" + isRead +
+                ", respondent='" + respondent + '\'' +
+                ", postTitle='" + postTitle + '\'' +
                 '}';
     }
 }

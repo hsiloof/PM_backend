@@ -46,7 +46,7 @@ public class NotifyController {
         return CommonResult.successResult(notifiesNum,"获取成功");
     }
 
-    @ApiOperation("更新用户信息")
+    @ApiOperation("更改通知")
     @ResponseBody
     @PutMapping("")
     public CommonResult<String> getNotifiesNumByUserIdAndRead(Notify notify){

@@ -164,6 +164,8 @@ public class PostController {
             Notify notify = new Notify();
             notify.setPostId(post.getId());
             notify.setOwnerId(post.getOwner().getId());
+            notify.setRespondent(user.getUsername());
+            notify.setPostTitle(post.getTitle());
             notifyService.createNotify(notify);
 
         }catch (InvalidBlockException e){
@@ -191,12 +193,15 @@ public class PostController {
             reply.setBlockId(createReplyParam.getBlock_id());
             Reply createdReply = replyService.createReply(reply);
 
+            Post post = postService.getPostById(createReplyParam.getPost_id());
             Block block = blockService.getBlockById(createReplyParam.getBlock_id());
 
             Notify notify = new Notify();
             notify.setOwnerId(block.getOwner().getId());
             notify.setPostId(createReplyParam.getPost_id());
             notify.setBlockId(block.getId());
+            notify.setRespondent(user.getUsername());
+            notify.setPostTitle(post.getTitle());
             notifyService.createNotify(notify);
 
         }catch (InvalidReplyException e){
