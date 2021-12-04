@@ -2,19 +2,26 @@ package com.jinax.pm_backend.Service;
 
 import com.jinax.pm_backend.Entity.Tag;
 import com.jinax.pm_backend.Repository.TagRepository;
+import com.jinax.pm_backend.Result.GetTopTagResult;
+import org.hibernate.query.internal.NativeQueryImpl;
+import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import java.util.*;
 
 @Service
 public class TagService {
     private static final Logger LOGGER = LoggerFactory.getLogger(TagService.class);
     private final TagRepository tagRepository;
+    private final EntityManager entityManager;
 
-    public TagService(TagRepository tagRepository) {
+    public TagService(TagRepository tagRepository, EntityManager entityManager) {
         this.tagRepository = tagRepository;
+        this.entityManager = entityManager;
     }
     public Tag getTagById(int id){
         Optional<Tag> byId = tagRepository.findById(id);
@@ -45,5 +52,17 @@ public class TagService {
     }
     public List<Tag> getTagsByKeyword(String keyword){
         return tagRepository.getTagsByNameLike("%"+keyword+"%");
+    }
+
+    public Map<Tag,Long> getTopTags() {
+        Query nativeQuery = entityManager.createNativeQuery("select name,tic.id as id,tic.count as count from tag left join (select tag_id as id,count(*) as count from post_tag_relation group by tag_id) as tic on tag.id = tic.id order by tic.count limit 20");
+        nativeQuery.unwrap(NativeQueryImpl.class).setResultTransformer(Transformers.aliasToBean(GetTopTagResult.class));
+        List<GetTopTagResult> topTags = nativeQuery.getResultList();
+        Map<Tag,Long> result = new HashMap<>();
+        for(GetTopTagResult line : topTags){
+            Tag tag = new Tag(line.getId(),line.getName());
+            result.put(tag,line.getCount().longValue());
+        }
+        return result;
     }
 }

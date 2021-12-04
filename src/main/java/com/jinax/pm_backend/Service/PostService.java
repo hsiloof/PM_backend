@@ -131,6 +131,14 @@ public class PostService {
                 .collect(Collectors.toList());
     }
 
+    public List<Post> getTopPosts(){
+        return postRepository.getTopPosts();
+    }
+
+    public List<Post> getTopPostsNearBy(double longitude, double latitude, double radius){
+        return getPostsByLocation(longitude,latitude,radius,0,10);
+    }
+
     /**
      * 帖子中是否包含所有tag
      */

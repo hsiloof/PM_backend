@@ -20,6 +20,8 @@ public interface PostRepository extends JpaRepository<Post,Integer>, JpaSpecific
     Page<Post> getPostsByContent(String content,String title, Pageable pageable);
     @Query(value = "select * from post where post.owner_id in(select id from user where username like %?1%)",nativeQuery = true)
     Page<Post> getPostsByOwnerNameLike(String ownerName, Pageable pageable);
+    @Query(value = "select * from post order by view_time desc limit 10",nativeQuery = true)
+    List<Post> getTopPosts();
     List<Post> findAll();
 
 
