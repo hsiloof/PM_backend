@@ -11,6 +11,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 @Api(tags ="NotifyController")
 @RestController
@@ -38,13 +42,25 @@ public class NotifyController {
         List<Notify> notifies = notifyService.getNotifiesByOwnerIdAndHasRead(id);
         return CommonResult.successResult(notifies,"获取成功");
     }
+
     @ApiOperation("获取未读通知")
     @ResponseBody
     @GetMapping("/unreadNum")
 
     public CommonResult<Integer> getNotifiesNumByUserIdAndRead(@RequestParam int id){
-        Integer notifiesNum = notifyService.getNumOfUnreadNotifies(id);
-        return CommonResult.successResult(notifiesNum,"获取成功");
+        int count= 0;
+        Future<Integer> notifiesNum = null;
+        try {
+            notifiesNum = notifyService.getNumOfUnreadNotifies(id);
+            count=notifiesNum.get(4, TimeUnit.SECONDS);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            if (notifiesNum!=null){
+                notifiesNum.cancel(true);
+            }
+        }
+        return CommonResult.successResult(count,"获取成功");
     }
 
     @ApiOperation("更改通知")

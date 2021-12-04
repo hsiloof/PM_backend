@@ -5,10 +5,13 @@ import com.jinax.pm_backend.Entity.Notify;
 import com.jinax.pm_backend.Repository.NotifyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Future;
 
 @Service
 public class NotifyService {
@@ -22,6 +25,8 @@ public class NotifyService {
         Notify byId = notifyRepository.getNotifyById(id);
         return byId;
     }
+
+
     public List<Notify> getNotifiesByOwnerIdAndNotRead(int id){
         List<Notify> byOwnerId = notifyRepository.getNotifiesByOwnerIdAndIsRead(id,(short) 0);
         LOGGER.info("getNotifiesByOwnerIdAndNotRead, owner_id : {}, notifies: {}",id,byOwnerId.toString());
@@ -38,9 +43,19 @@ public class NotifyService {
         LOGGER.info("getNotifiesByOwnerIdAndHasRead, owner_id : {}, notifies: {}",id,byOwnerId.toString());
         return byOwnerId;
     }
-    public Integer getNumOfUnreadNotifies(int id){
-        Integer byId = notifyRepository.countByOwnerIdAndIsRead(id,(short) 0);
-        return byId;
+    @Async
+    public Future<Integer> getNumOfUnreadNotifies(int id) throws InterruptedException {
+
+        while (true){
+            synchronized (this){
+                int count = notifyRepository.countByOwnerIdAndIsRead(id,(short) 0);
+                if (count!=0){
+                    return new AsyncResult<>(count);
+                }
+            }
+            Thread.sleep(4000);
+        }
+
     }
 
     public Notify updateNotify(Notify notify){
