@@ -31,7 +31,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecifi
     @Query(value = "select * from post order by view_time desc limit 10", nativeQuery = true)
     List<Post> getTopPosts();
 
-    List<Post> findAll();
+    List<Post> findAllByIsDeletedLessThanEqual(short isDeleted);
 
     Page<Post> getPostByIsDeleted(short isDeleted, Pageable pageable);
 

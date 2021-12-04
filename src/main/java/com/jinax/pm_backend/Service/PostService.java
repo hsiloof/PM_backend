@@ -21,6 +21,7 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 public class PostService {
@@ -74,69 +75,101 @@ public class PostService {
         return savePost;
     }
 
-    public List<Post> getPostsByContent(String keyword, Integer page, Integer size) {
+    public Map<String, Object> getPostsByContent(String keyword, Integer page, Integer size) {
         Page<Post> dataList = postRepository.getPostsByContent(keyword, keyword, PageRequest.of(page, size));
-        return dataList.get().collect(Collectors.toList());
+        return getStringObjectMap(dataList);
     }
 
-
-    public List<Post> getPostsByAuthor(String author, Integer page, Integer size) {
-        return postRepository.getPostsByOwnerNameLike(author, PageRequest.of(page, size))
+    private Map<String, Object> getStringObjectMap(Page<Post> dataList) {
+        Map<String, Object> map = new HashMap<>();
+        List<Post> data = dataList
                 .get()
                 .collect(Collectors.toList());
+        map.put("result", data);
+        map.put("totalPage", dataList.getTotalPages());
+        map.put("curPage", dataList.getNumber());
+        return map;
     }
 
-    public List<Post> getPostsByLocation(Double longitude, Double latitude, Double radius, Integer page, Integer size) {
-        return postRepository.findAll().stream()
+
+    public Map<String, Object> getPostsByAuthor(String author, Integer page, Integer size) {
+        Page<Post> pageList = postRepository.getPostsByOwnerNameLike(author, PageRequest.of(page, size));
+        return getStringObjectMap(pageList);
+    }
+
+    public Map<String, Object> getPostsByLocation(Double longitude, Double latitude, Double radius, Integer page, Integer size) {
+        List<Post> dataList = postRepository.findAllByIsDeletedLessThanEqual((short) 1);
+        long count = dataList.stream()
+                .filter(item -> isInCircle(item, latitude, longitude, radius))
+                .count();
+
+        List<Post> data = dataList.stream()
                 .filter(item -> isInCircle(item, latitude, longitude, radius))
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
+        return getStringObjectMap(page, (long)Math.ceil((double)count/size), data);
     }
 
     private boolean isInCircle(Post post, Double latitude, Double longitude, Double radius) {
         return (Math.pow(post.getLatitude() - latitude, 2) + Math.pow(post.getLongitude() - longitude, 2) < Math.pow(radius, 2));
     }
 
-    public List<Post> getPostsByAddress(SearchAddressRequest request) {
+    public Map<String, Object> getPostsByAddress(SearchAddressRequest request) {
         Specification<Post> postSpecification = new Specification<Post>() {
             @Override
             public Predicate toPredicate(Root<Post> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 List<Predicate> predicates = new ArrayList<>();
-                if (request.getCity() != null&&!request.getCity().isEmpty()) {
-                    predicates.add(cb.like(root.get("city"), "%"+request.getCity()+"%"));
+                if (request.getCity() != null && !request.getCity().isEmpty()) {
+                    predicates.add(cb.like(root.get("city"), "%" + request.getCity() + "%"));
                 }
-                if (request.getDistrict() != null&&!request.getDistrict().isEmpty()) {
-                    predicates.add(cb.like(root.get("district"), "%"+request.getDistrict()+"%"));
+                if (request.getDistrict() != null && !request.getDistrict().isEmpty()) {
+                    predicates.add(cb.like(root.get("district"), "%" + request.getDistrict() + "%"));
                 }
-                if (request.getProvince() != null&&!request.getProvince().isEmpty()) {
-                    predicates.add(cb.like(root.get("province"), "%"+request.getProvince()+"%"));
+                if (request.getProvince() != null && !request.getProvince().isEmpty()) {
+                    predicates.add(cb.like(root.get("province"), "%" + request.getProvince() + "%"));
                 }
-                if (request.getStreet() != null&&!request.getStreet().isEmpty()) {
-                    predicates.add(cb.like(root.get("street"), "%"+request.getStreet()+"%"));
+                if (request.getStreet() != null && !request.getStreet().isEmpty()) {
+                    predicates.add(cb.like(root.get("street"), "%" + request.getStreet() + "%"));
                 }
                 return cb.and(predicates.toArray(new Predicate[0]));
             }
         };
-        return postRepository.findAll(postSpecification, PageRequest.of(request.getPage(), request.getSize()))
-                .get()
-                .collect(Collectors.toList());
+        Page<Post> dataList = postRepository.findAll(postSpecification, PageRequest.of(request.getPage(), request.getSize()));
+        return getStringObjectMap(dataList);
     }
 
-    public List<Post> getPostsByTags(List<String> tags, Integer page, Integer size) {
-        return postRepository.findAll().stream()
+    public Map<String, Object> getPostsByTags(List<String> tags, Integer page, Integer size) {
+        List<Post> dataList = postRepository.findAllByIsDeletedLessThanEqual((short) 1);
+        long count = dataList.stream()
+                .filter(item -> isTagsAllInPost(item, tags))
+                .count();
+        List<Post> collect = dataList.stream()
                 .filter(item -> isTagsAllInPost(item, tags))
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
+        return getStringObjectMap(page, (long)Math.ceil((double)count/size), collect);
     }
 
-    public List<Post> getTopPosts(){
+    private Map<String, Object> getStringObjectMap(Integer page, long totalPage, List<Post> collect) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("result", collect);
+        map.put("totalPage", totalPage);
+        map.put("curPage", page);
+        return map;
+    }
+
+    public List<Post> getTopPosts() {
         return postRepository.getTopPosts();
     }
 
-    public List<Post> getTopPostsNearBy(double longitude, double latitude){
-        return getPostsByLocation(longitude,latitude, (double) 20,0,10);
+    public List<Post> getTopPostsNearBy(double longitude, double latitude) {
+        return postRepository.findAllByIsDeletedLessThanEqual((short) 1).stream()
+                .filter(item -> isInCircle(item, latitude, longitude, (double) 20))
+                .sorted(Comparator.comparing(Post::getViewTime).reversed())
+                .limit(10)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -150,12 +183,12 @@ public class PostService {
                 .containsAll(tags);
     }
 
-    public Page<Post> getReportedPost(int page,int size){
-
-        return postRepository.getPostByIsDeleted((short) 1,PageRequest.of(page, size));
+    public Page<Post> getReportedPost(int page, int size) {
+        return postRepository.getPostByIsDeleted((short) 1, PageRequest.of(page, size));
     }
-    public void updateReportedPost(Integer id,short operation){
-        short state=(short) (operation==0?2:0);
-        postRepository.updatePost(id,state);
+
+    public void updateReportedPost(Integer id, short operation) {
+        short state = (short) (operation == 0 ? 2 : 0);
+        postRepository.updatePost(id, state);
     }
 }
