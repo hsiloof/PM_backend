@@ -7,7 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -46,5 +45,13 @@ public class BlockService {
         Block saveBlock = blockRepository.save(block);
         LOGGER.info("createBlock, block before create : {}, block after create : {}",block,saveBlock);
         return saveBlock;
+    }
+
+    public Page<Block> getReportedBlock(int page,int size){
+        return blockRepository.getBlockByIsDeleted((short) 1,PageRequest.of(page, size));
+    }
+    public void updateBlock(int id,short operation){
+        short state=(short) (operation==0?2:0);
+        blockRepository.updateBlock(id,state);
     }
 }

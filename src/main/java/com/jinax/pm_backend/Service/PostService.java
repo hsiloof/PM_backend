@@ -149,4 +149,13 @@ public class PostService {
                 .collect(Collectors.toList())
                 .containsAll(tags);
     }
+
+    public Page<Post> getReportedPost(int page,int size){
+
+        return postRepository.getPostByIsDeleted((short) 1,PageRequest.of(page, size));
+    }
+    public void updateReportedPost(Integer id,short operation){
+        short state=(short) (operation==0?2:0);
+        postRepository.updatePost(id,state);
+    }
 }

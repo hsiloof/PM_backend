@@ -5,9 +5,12 @@ import com.jinax.pm_backend.Exception.InvalidReplyException;
 import com.jinax.pm_backend.Repository.ReplyRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -29,5 +32,19 @@ public class ReplyService {
         Reply saveReply = replyRepository.save(reply);
         LOGGER.info("createReply, reply before create:{},reply after create:{}",reply,saveReply);
         return saveReply;
+    }
+
+    public Page<Reply> getReportedReplyList(int page, int size){
+        return  replyRepository.getAllByIsDeleted((short)1, PageRequest.of(page, size));
+    }
+
+    /**
+     * 更新回复状态
+     * @param operation 0为删除，1为恢复
+     * @param id reply id
+     */
+    public void updateReply(short operation,int id){
+        short state=(short) (operation==0?2:0);
+        replyRepository.updateReply(id,state);
     }
 }
