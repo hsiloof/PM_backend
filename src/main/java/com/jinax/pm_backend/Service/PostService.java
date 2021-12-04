@@ -135,8 +135,8 @@ public class PostService {
         return postRepository.getTopPosts();
     }
 
-    public List<Post> getTopPostsNearBy(double longitude, double latitude, double radius){
-        return getPostsByLocation(longitude,latitude,radius,0,10);
+    public List<Post> getTopPostsNearBy(double longitude, double latitude){
+        return getPostsByLocation(longitude,latitude, (double) 20,0,10);
     }
 
     /**

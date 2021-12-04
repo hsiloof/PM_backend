@@ -40,8 +40,8 @@ public class RankingController {
     @ApiOperation("获取附近排名前十的帖子")
     @ResponseBody
     @GetMapping("/post/nearby")
-    public CommonResult<List<Post>> getTopPostsNearby(Double longitude,Double latitude,Double radius){
-        return CommonResult.successResult(postService.getTopPostsNearBy(longitude,latitude,radius),"操作成功");
+    public CommonResult<List<Post>> getTopPostsNearby(Double longitude,Double latitude){
+        return CommonResult.successResult(postService.getTopPostsNearBy(longitude,latitude),"操作成功");
     }
 
     @ApiOperation("获取的帖子")
