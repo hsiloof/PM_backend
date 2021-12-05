@@ -91,15 +91,12 @@ public class PostController {
     }
 
 
-    @ApiOperation("获取指定用户的的帖子")
+    @ApiOperation("获取指定帖子的回复")
     @ResponseBody
     @GetMapping("/answer/{postId}")
     public CommonResult<List<Block>> getAnswersByPostIdPaged(@PathVariable("postId") int postId,int page,int size){
         LOGGER.info("getAnswersByPostIdPaged, ownerId is: {}",postId);
         List<Block> blocks = blockService.getBlockByPostIdPaged(postId,page,size);
-        if (blocks.size()<=0){
-            return CommonResult.failResult(null,"该用户不存在或未发过帖子");
-        }
         return CommonResult.successResult(blocks,"成功");
     }
 //    @ApiOperation("增加新问题（发帖）")
