@@ -29,6 +29,12 @@ public class BlockService {
         LOGGER.info("getBlockById, id : {}, block: {}",id,block);
         return block;
     }
+    public Block reportBlock(int id){
+        Block block = getBlockById(id);
+        block.setIsReported((short)1);
+        blockRepository.save(block);
+        return block;
+    }
     public List<Block> getBlockByOwnerId(int ownerId){
         List<Block> byOwnerId = blockRepository.getBlocksByOwnerId(ownerId);
         return byOwnerId;

@@ -210,4 +210,26 @@ public class PostController {
         return CommonResult.successResult(null,"盖楼成功");
     }
 
+    @ApiOperation("举报帖子")
+    @ResponseBody
+    @PutMapping("/question/reported/{postId}")
+    public CommonResult<String> reportPost(@PathVariable("postId") int postId){
+        Post post = postService.reportPost(postId);
+        return CommonResult.successResult(null,"举报成功");
+    }
+    @ApiOperation("举报楼")
+    @ResponseBody
+    @PutMapping("answer/reported/{blockId}")
+    public CommonResult<String> reportBlock(@PathVariable("blockId") int blockId){
+        Block block = blockService.reportBlock(blockId);
+        return CommonResult.successResult(null,"举报成功");
+    }
+    @ApiOperation("举报回复")
+    @ResponseBody
+    @PutMapping("/comment/reported/{replyId}")
+    public CommonResult<String> reportReply(@PathVariable("replyId") int replyId){
+        Reply reply = replyService.reportReply(replyId);
+        return CommonResult.successResult(null,"举报成功");
+    }
+
 }

@@ -39,6 +39,7 @@ public class PostService {
         return post;
     }
 
+
     public Post getPostByIdNotDeleted(int id) {
         Optional<Post> byId = postRepository.getPostByIdAndIsDeletedEquals(id, (short) 0);
         Post post = byId.orElse(null);
@@ -190,5 +191,12 @@ public class PostService {
     public void updateReportedPost(Integer id, short operation) {
         short state = (short) (operation == 0 ? 2 : 0);
         postRepository.updatePost(id, state);
+    }
+
+    public Post reportPost(int id){
+        Post post = getPostById(id);
+        post.setIsReported((short)1);
+        postRepository.save(post);
+        return post;
     }
 }

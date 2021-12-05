@@ -40,11 +40,13 @@ public class Reply {
     private String street;
     @Column(name = "is_deleted", nullable = false)
     private short isDeleted;
+    @Column(name = "is_reported", nullable = false)
+    private short isReported;
 
     public Reply() {
     }
 
-    public Reply(Integer id, Integer postId, Integer blockId, User owner, String content, Date createTime, Double longitude, Double latitude, String city, String district, String province, String street, short isDeleted) {
+    public Reply(Integer id, Integer postId, Integer blockId, User owner, String content, Date createTime, Double longitude, Double latitude, String city, String district, String province, String street, short isDeleted, short isReported) {
         this.id = id;
         this.postId = postId;
         this.blockId = blockId;
@@ -58,6 +60,7 @@ public class Reply {
         this.province = province;
         this.street = street;
         this.isDeleted = isDeleted;
+        this.isReported = isReported;
     }
 
     public Integer getId() {
@@ -169,22 +172,32 @@ public class Reply {
         this.isDeleted = isDeleted;
     }
 
+    public short getIsReported() {
+        return isReported;
+    }
+
+    public void setIsReported(short isReported) {
+        this.isReported = isReported;
+    }
+
+
     @Override
     public String toString() {
         return "Reply{" +
                 "id=" + id +
                 ", postId=" + postId +
                 ", blockId=" + blockId +
-                ", ownerName=" + getOwnerName() +
+                ", owner=" + owner +
                 ", content='" + content + '\'' +
-                ", longitude='" + longitude +
-                ", latitude='" + latitude +
-                ", city='" + city +
-                ", district='" + district +
-                ", province='" + province +
-                ", street='" + street + '\'' +
                 ", createTime=" + createTime +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", city='" + city + '\'' +
+                ", district='" + district + '\'' +
+                ", province='" + province + '\'' +
+                ", street='" + street + '\'' +
                 ", isDeleted=" + isDeleted +
+                ", isReported=" + isReported +
                 '}';
     }
 }
