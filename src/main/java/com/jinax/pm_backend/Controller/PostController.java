@@ -107,8 +107,8 @@ public class PostController {
     @ResponseBody
     @PostMapping("/question/add")
     @Transactional
-    public CommonResult<String> createPost(CreatePostParam createPostParam){
-
+    public CommonResult<Integer> createPost(CreatePostParam createPostParam){
+        Post createdPost = null;
         LOGGER.info("create post, post is: {}",createPostParam);
         try {
             User user = userService.getUserById(createPostParam.getOwner_id());
@@ -133,12 +133,12 @@ public class PostController {
             post.setLongitude(createPostParam.getLongitude());
             post.setLatitude(createPostParam.getLatitude());
             post.setOwner(user);
-            Post createdPost = postService.creatPost(post);
+            createdPost = postService.creatPost(post);
 
         }catch (InvalidPostException e){
             return CommonResult.failResult(null,"发帖失败");
         }
-        return CommonResult.successResult(null,"发帖成功");
+        return CommonResult.successResult(createdPost.getId(),"发帖成功");
     }
     @ApiOperation("增加新回答（盖楼）")
     @ResponseBody
