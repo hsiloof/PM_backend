@@ -21,7 +21,6 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class PostService {
@@ -77,8 +76,16 @@ public class PostService {
     }
 
     public Map<String, Object> getPostsByContent(String keyword, Integer page, Integer size) {
-        Page<Post> dataList = postRepository.getPostsByContent(keyword, keyword, PageRequest.of(page, size));
-        return getStringObjectMap(dataList);
+        List<Post> postList = postRepository.findAll();
+        long count = postList.stream()
+                .filter(post -> post.getContent().getContent().contains(keyword) || post.getTitle().contains(keyword))
+                .count();
+        List<Post> data = postList.stream()
+                .filter(post -> post.getContent().getContent().contains(keyword) || post.getTitle().contains(keyword))
+                .skip((long) page * size)
+                .limit(size)
+                .collect(Collectors.toList());
+        return getStringObjectMap(page, (long)Math.ceil((double)count/size), data);
     }
 
     private Map<String, Object> getStringObjectMap(Page<Post> dataList) {
@@ -140,13 +147,15 @@ public class PostService {
         return getStringObjectMap(dataList);
     }
 
-    public Map<String, Object> getPostsByTags(List<String> tags, Integer page, Integer size) {
+    public Map<String, Object> getPostsByTags(String tagsStr, Integer page, Integer size) {
+        String[] tags = tagsStr.split(",");
+        List<String> tagList = Arrays.stream(tags).toList();
         List<Post> dataList = postRepository.findAllByIsDeletedLessThanEqual((short) 1);
         long count = dataList.stream()
-                .filter(item -> isTagsAllInPost(item, tags))
+                .filter(item -> isTagsAllInPost(item, tagList))
                 .count();
         List<Post> collect = dataList.stream()
-                .filter(item -> isTagsAllInPost(item, tags))
+                .filter(item -> isTagsAllInPost(item, tagList))
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
