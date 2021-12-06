@@ -85,7 +85,7 @@ public class PostService {
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
-        return getStringObjectMap(page, (long)Math.ceil((double)count/size), data);
+        return getStringObjectMap(page, (long) Math.ceil((double) count / size), data);
     }
 
     private Map<String, Object> getStringObjectMap(Page<Post> dataList) {
@@ -116,11 +116,20 @@ public class PostService {
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
-        return getStringObjectMap(page, (long)Math.ceil((double)count/size), data);
+        return getStringObjectMap(page, (long) Math.ceil((double) count / size), data);
     }
 
     private boolean isInCircle(Post post, Double latitude, Double longitude, Double radius) {
-        return (Math.pow(post.getLatitude() - latitude, 2) + Math.pow(post.getLongitude() - longitude, 2) < Math.pow(radius, 2));
+
+        // 地球半径为R=6371.0 km
+//        C = sin(LatA)*sin(LatB) + cos(LatA)*cos(LatB)*cos(MLonA-MLonB)
+//
+//Distance = R*Arccos(C)*Pi/180
+        double r = 6371 * 1000;
+//        return (Math.pow(post.getLatitude() - latitude, 2) + Math.pow(post.getLongitude() - longitude, 2) < Math.pow(radius, 2));
+        double c = Math.sin(latitude) * Math.sin(post.getLatitude()) + Math.cos(latitude) * Math.cos(post.getLatitude()) * Math.cos(longitude - post.getLongitude());
+        double distance = r * Math.acos(c) * Math.PI / 180;
+        return distance <= radius;
     }
 
     public Map<String, Object> getPostsByAddress(SearchAddressRequest request) {
@@ -159,7 +168,7 @@ public class PostService {
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
-        return getStringObjectMap(page, (long)Math.ceil((double)count/size), collect);
+        return getStringObjectMap(page, (long) Math.ceil((double) count / size), collect);
     }
 
     private Map<String, Object> getStringObjectMap(Integer page, long totalPage, List<Post> collect) {
@@ -202,9 +211,9 @@ public class PostService {
         postRepository.updatePost(id, state);
     }
 
-    public Post reportPost(int id){
+    public Post reportPost(int id) {
         Post post = getPostById(id);
-        post.setIsReported((short)1);
+        post.setIsReported((short) 1);
         postRepository.save(post);
         return post;
     }
