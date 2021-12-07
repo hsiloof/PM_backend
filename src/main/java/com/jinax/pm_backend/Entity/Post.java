@@ -44,6 +44,8 @@ public class Post {
     private short isDeleted;
     @Column(name = "view_time", nullable = false)
     private int viewTime;
+    @Column(name = "is_reported", nullable = false)
+    private short isReported;
     @JsonManagedReference
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JoinTable(name = "post_tag_relation",
@@ -160,7 +162,15 @@ public class Post {
         this.viewTime = viewTime;
     }
 
-//    @JoinTable(name = "post_tag_relation",
+    public short getIsReported() {
+        return isReported;
+    }
+
+    public void setIsReported(short isReported) {
+        this.isReported = isReported;
+    }
+
+    //    @JoinTable(name = "post_tag_relation",
 //            joinColumns = { @JoinColumn(name = "id", referencedColumnName = "post_id") },
 //            inverseJoinColumns = { @JoinColumn(name = "id", referencedColumnName = "tag_id") })
     public Set<Tag> getTags(){
@@ -186,7 +196,7 @@ public class Post {
     public Post() {
     }
 
-    public Post(Integer id, String title, Content content, User owner, Double longitude, Double latitude, String city, String district, String province, String street, Date createTime, short isDeleted, int viewTime, Set<Tag> tags) {
+    public Post(Integer id, String title, Content content, User owner, Double longitude, Double latitude, String city, String district, String province, String street, Date createTime, short isDeleted, int viewTime, short isReported, Set<Tag> tags) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -200,6 +210,7 @@ public class Post {
         this.createTime = createTime;
         this.isDeleted = isDeleted;
         this.viewTime = viewTime;
+        this.isReported = isReported;
         this.tags = tags;
     }
 
@@ -209,16 +220,17 @@ public class Post {
                 "id=" + id +
                 ", title='" + title + '\'' +
                 ", content=" + content +
-//                ", ownerName='" + owner.getUsername() + '\'' +
-                ", longitude='" + longitude +
-                ", latitude='" + latitude +
-                ", city='" + city +
-                ", district='" + district +
-                ", province='" + province +
+                ", owner=" + owner +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", city='" + city + '\'' +
+                ", district='" + district + '\'' +
+                ", province='" + province + '\'' +
                 ", street='" + street + '\'' +
                 ", createTime=" + createTime +
                 ", isDeleted=" + isDeleted +
                 ", viewTime=" + viewTime +
+                ", isReported=" + isReported +
                 ", tags=" + tags +
                 '}';
     }

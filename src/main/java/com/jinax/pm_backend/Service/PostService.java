@@ -21,7 +21,6 @@ import javax.persistence.criteria.Root;
 import java.util.*;
 
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 public class PostService {
@@ -38,6 +37,7 @@ public class PostService {
         LOGGER.info("getPostById, id : {}, post : {}", id, post);
         return post;
     }
+
 
     public Post getPostByIdNotDeleted(int id) {
         Optional<Post> byId = postRepository.getPostByIdAndIsDeletedEquals(id, (short) 0);
@@ -76,8 +76,16 @@ public class PostService {
     }
 
     public Map<String, Object> getPostsByContent(String keyword, Integer page, Integer size) {
-        Page<Post> dataList = postRepository.getPostsByContent(keyword, keyword, PageRequest.of(page, size));
-        return getStringObjectMap(dataList);
+        List<Post> postList = postRepository.findAll();
+        long count = postList.stream()
+                .filter(post -> post.getContent().getContent().contains(keyword) || post.getTitle().contains(keyword))
+                .count();
+        List<Post> data = postList.stream()
+                .filter(post -> post.getContent().getContent().contains(keyword) || post.getTitle().contains(keyword))
+                .skip((long) page * size)
+                .limit(size)
+                .collect(Collectors.toList());
+        return getStringObjectMap(page, (long) Math.ceil((double) count / size), data);
     }
 
     private Map<String, Object> getStringObjectMap(Page<Post> dataList) {
@@ -108,11 +116,20 @@ public class PostService {
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
-        return getStringObjectMap(page, (long)Math.ceil((double)count/size), data);
+        return getStringObjectMap(page, (long) Math.ceil((double) count / size), data);
     }
 
     private boolean isInCircle(Post post, Double latitude, Double longitude, Double radius) {
-        return (Math.pow(post.getLatitude() - latitude, 2) + Math.pow(post.getLongitude() - longitude, 2) < Math.pow(radius, 2));
+
+        // 地球半径为R=6371.0 km
+//        C = sin(LatA)*sin(LatB) + cos(LatA)*cos(LatB)*cos(MLonA-MLonB)
+//
+//Distance = R*Arccos(C)*Pi/180
+        double r = 6371 * 1000;
+//        return (Math.pow(post.getLatitude() - latitude, 2) + Math.pow(post.getLongitude() - longitude, 2) < Math.pow(radius, 2));
+        double c = Math.sin(latitude) * Math.sin(post.getLatitude()) + Math.cos(latitude) * Math.cos(post.getLatitude()) * Math.cos(longitude - post.getLongitude());
+        double distance = r * Math.acos(c) * Math.PI / 180;
+        return distance <= radius;
     }
 
     public Map<String, Object> getPostsByAddress(SearchAddressRequest request) {
@@ -139,17 +156,19 @@ public class PostService {
         return getStringObjectMap(dataList);
     }
 
-    public Map<String, Object> getPostsByTags(List<String> tags, Integer page, Integer size) {
+    public Map<String, Object> getPostsByTags(String tagsStr, Integer page, Integer size) {
+        String[] tags = tagsStr.split(",");
+        List<String> tagList = Arrays.stream(tags).toList();
         List<Post> dataList = postRepository.findAllByIsDeletedLessThanEqual((short) 1);
         long count = dataList.stream()
-                .filter(item -> isTagsAllInPost(item, tags))
+                .filter(item -> isTagsAllInPost(item, tagList))
                 .count();
         List<Post> collect = dataList.stream()
-                .filter(item -> isTagsAllInPost(item, tags))
+                .filter(item -> isTagsAllInPost(item, tagList))
                 .skip((long) page * size)
                 .limit(size)
                 .collect(Collectors.toList());
-        return getStringObjectMap(page, (long)Math.ceil((double)count/size), collect);
+        return getStringObjectMap(page, (long) Math.ceil((double) count / size), collect);
     }
 
     private Map<String, Object> getStringObjectMap(Integer page, long totalPage, List<Post> collect) {
@@ -190,5 +209,12 @@ public class PostService {
     public void updateReportedPost(Integer id, short operation) {
         short state = (short) (operation == 0 ? 2 : 0);
         postRepository.updatePost(id, state);
+    }
+
+    public Post reportPost(int id) {
+        Post post = getPostById(id);
+        post.setIsReported((short) 1);
+        postRepository.save(post);
+        return post;
     }
 }

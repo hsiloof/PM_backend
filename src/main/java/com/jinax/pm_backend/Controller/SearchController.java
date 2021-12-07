@@ -58,7 +58,7 @@ public class SearchController {
     @ApiOperation("返回含有所有指定标签的帖子")
     @ResponseBody
     @GetMapping("/search_tags")
-    public CommonResult<Map<String,Object>> getTagByNameLike(@RequestParam List<String> tags, Integer page, Integer size){
+    public CommonResult<Map<String,Object>> getTagByNameLike(@RequestParam String tags, Integer page, Integer size){
         return CommonResult.successResult(postService.getPostsByTags(tags,page,size),"操作成功");
     }
 }

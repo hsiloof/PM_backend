@@ -26,6 +26,13 @@ public class ReplyService {
         LOGGER.info("getReplyById, id:{},reply: {}",id,reply);
         return reply;
     }
+
+    public Reply reportReply(int id){
+        Reply reply = getReplyById(id);
+        reply.setIsReported((short)1);
+        replyRepository.save(reply);
+        return reply;
+    }
     public Reply createReply(Reply reply) throws InvalidReplyException {
         reply.setIsDeleted((short) 0);
         reply.setCreateTime(new Date());
