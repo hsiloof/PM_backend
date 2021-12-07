@@ -42,6 +42,10 @@ public class PostService {
     public Post getPostByIdNotDeleted(int id) {
         Optional<Post> byId = postRepository.getPostByIdAndIsDeletedEquals(id, (short) 0);
         Post post = byId.orElse(null);
+        if(post != null){
+            post.setViewTime(post.getViewTime() + 1);
+            postRepository.save(post);
+        }
         LOGGER.info("getPostByIdNotDeleted, id : {}, post : {}", id, post);
         return post;
     }
@@ -158,7 +162,7 @@ public class PostService {
 
     public Map<String, Object> getPostsByTags(String tagsStr, Integer page, Integer size) {
         String[] tags = tagsStr.split(",");
-        List<String> tagList = Arrays.stream(tags).toList();
+        List<String> tagList = Arrays.stream(tags).collect(Collectors.toList());
         List<Post> dataList = postRepository.findAllByIsDeletedLessThanEqual((short) 1);
         long count = dataList.stream()
                 .filter(item -> isTagsAllInPost(item, tagList))
