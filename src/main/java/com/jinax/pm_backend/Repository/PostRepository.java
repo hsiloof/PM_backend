@@ -22,9 +22,6 @@ public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecifi
     @Query(value = "select distinct * from post where post.id in (select post_id from reply where owner_id=?)", nativeQuery = true)
     List<Post> getPostsByReplierIdEquals(int replierId);
 
-    @Query(value = "select distinct * from post where post.content_id in(select id from content where content like %?1% ) or post.title like %?2% ", nativeQuery = true)
-    Page<Post> getPostsByContent(String content, String title, Pageable pageable);
-
     @Query(value = "select * from post where post.owner_id in(select id from user where username like %?1%)", nativeQuery = true)
     Page<Post> getPostsByOwnerNameLike(String ownerName, Pageable pageable);
 
