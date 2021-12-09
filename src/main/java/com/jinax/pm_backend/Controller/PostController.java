@@ -216,7 +216,7 @@ public class PostController {
     }
     @ApiOperation("举报楼")
     @ResponseBody
-    @PutMapping("answer/reported/{blockId}")
+    @PutMapping("/answer/reported/{blockId}")
     public CommonResult<String> reportBlock(@PathVariable("blockId") int blockId){
         Block block = blockService.reportBlock(blockId);
         return CommonResult.successResult(null,"举报成功");

@@ -195,7 +195,7 @@ public class PostService {
 
     public Post reportPost(int id){
         Post post = getPostById(id);
-        post.setIsReported((short)1);
+        post.setIsDeleted((short)1);
         postRepository.save(post);
         return post;
     }

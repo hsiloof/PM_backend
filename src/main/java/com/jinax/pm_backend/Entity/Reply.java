@@ -40,13 +40,11 @@ public class Reply {
     private String street;
     @Column(name = "is_deleted", nullable = false)
     private short isDeleted;
-    @Column(name = "is_reported", nullable = false)
-    private short isReported;
 
     public Reply() {
     }
 
-    public Reply(Integer id, Integer postId, Integer blockId, User owner, String content, Date createTime, Double longitude, Double latitude, String city, String district, String province, String street, short isDeleted, short isReported) {
+    public Reply(Integer id, Integer postId, Integer blockId, User owner, String content, Date createTime, Double longitude, Double latitude, String city, String district, String province, String street, short isDeleted) {
         this.id = id;
         this.postId = postId;
         this.blockId = blockId;
@@ -60,7 +58,6 @@ public class Reply {
         this.province = province;
         this.street = street;
         this.isDeleted = isDeleted;
-        this.isReported = isReported;
     }
 
     public Integer getId() {
@@ -83,8 +80,8 @@ public class Reply {
         return blockId;
     }
 
-    public void setBlockId(Integer blocktId) {
-        this.blockId = blocktId;
+    public void setBlockId(Integer blockId) {
+        this.blockId = blockId;
     }
 
     public User getOwner() {
@@ -172,13 +169,6 @@ public class Reply {
         this.isDeleted = isDeleted;
     }
 
-    public short getIsReported() {
-        return isReported;
-    }
-
-    public void setIsReported(short isReported) {
-        this.isReported = isReported;
-    }
 
 
     @Override
@@ -197,7 +187,6 @@ public class Reply {
                 ", province='" + province + '\'' +
                 ", street='" + street + '\'' +
                 ", isDeleted=" + isDeleted +
-                ", isReported=" + isReported +
                 '}';
     }
 }

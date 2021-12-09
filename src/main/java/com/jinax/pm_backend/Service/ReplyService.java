@@ -29,7 +29,7 @@ public class ReplyService {
 
     public Reply reportReply(int id){
         Reply reply = getReplyById(id);
-        reply.setIsReported((short)1);
+        reply.setIsDeleted((short)1);
         replyRepository.save(reply);
         return reply;
     }

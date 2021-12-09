@@ -38,8 +38,6 @@ public class Block {
     private Date createTime;
     @Column(name = "is_deleted", nullable = false)
     private short isDeleted;
-    @Column(name = "is_reported", nullable = false)
-    private short isReported;
     @OneToMany(targetEntity = Reply.class)
     @JoinColumn(name = "block_id",referencedColumnName = "id")
     private Set<Reply> replySet = new HashSet<>();
@@ -144,13 +142,6 @@ public class Block {
         this.isDeleted = isDeleted;
     }
 
-    public short getIsReported() {
-        return isReported;
-    }
-
-    public void setIsReported(short isReported) {
-        this.isReported = isReported;
-    }
 
     public Set<Reply> getReplySet() {
         return replySet;
@@ -164,7 +155,7 @@ public class Block {
 
     }
 
-    public Block(Integer id, Integer postId, String content, User owner, Double longitude, Double latitude, String city, String district, String province, String street, Date createTime, short isDeleted, short isReported, Set<Reply> replySet) {
+    public Block(Integer id, Integer postId, String content, User owner, Double longitude, Double latitude, String city, String district, String province, String street, Date createTime, short isDeleted, Set<Reply> replySet) {
         this.id = id;
         this.postId = postId;
         this.content = content;
@@ -177,7 +168,6 @@ public class Block {
         this.street = street;
         this.createTime = createTime;
         this.isDeleted = isDeleted;
-        this.isReported = isReported;
         this.replySet = replySet;
     }
 
@@ -196,7 +186,6 @@ public class Block {
                 ", street='" + street + '\'' +
                 ", createTime=" + createTime +
                 ", isDeleted=" + isDeleted +
-                ", isReported=" + isReported +
                 ", replySet=" + replySet +
                 '}';
     }

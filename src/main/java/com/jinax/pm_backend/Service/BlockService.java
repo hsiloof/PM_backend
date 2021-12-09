@@ -31,7 +31,7 @@ public class BlockService {
     }
     public Block reportBlock(int id){
         Block block = getBlockById(id);
-        block.setIsReported((short)1);
+        block.setIsDeleted((short)1);
         blockRepository.save(block);
         return block;
     }
