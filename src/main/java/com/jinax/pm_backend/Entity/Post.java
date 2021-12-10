@@ -45,7 +45,7 @@ public class Post {
     @Column(name = "view_time", nullable = false)
     private int viewTime;
     @JsonManagedReference
-    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "post_tag_relation",
             joinColumns = {
                 @JoinColumn(name = "post_id",referencedColumnName = "id"),},

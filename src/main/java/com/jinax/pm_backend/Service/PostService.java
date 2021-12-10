@@ -8,6 +8,8 @@ import com.jinax.pm_backend.Repository.PostRepository;
 import com.jinax.pm_backend.param.SearchAddressRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -40,7 +42,7 @@ public class PostService {
 
 
     public Post getPostByIdNotDeleted(int id) {
-        Optional<Post> byId = postRepository.getPostByIdAndIsDeletedEquals(id, (short) 0);
+        Optional<Post> byId = postRepository.getPostByIdAndIsDeletedLessThanEqual(id, (short) 1);
         Post post = byId.orElse(null);
         if(post != null){
             post.setViewTime(post.getViewTime() + 1);
@@ -80,7 +82,7 @@ public class PostService {
     }
 
     public Map<String, Object> getPostsByContent(String keyword, Integer page, Integer size) {
-        List<Post> postList = postRepository.findAll();
+        List<Post> postList = postRepository.findAllByIsDeletedLessThanEqual((short) 1);
         long count = postList.stream()
                 .filter(post -> post.getContent().getContent().contains(keyword) || post.getTitle().contains(keyword))
                 .count();
@@ -182,8 +184,12 @@ public class PostService {
         map.put("curPage", page);
         return map;
     }
-
+    @Cacheable(cacheNames = "topPosts")
     public List<Post> getTopPosts() {
+        return postRepository.getTopPosts();
+    }
+    @CachePut(cacheNames = "topPosts")
+    public List<Post> updateCacheTopPosts() {
         return postRepository.getTopPosts();
     }
 
@@ -217,11 +223,8 @@ public class PostService {
 
     public Post reportPost(int id) {
         Post post = getPostById(id);
-<<<<<<< HEAD
         post.setIsDeleted((short)1);
-=======
-        post.setIsReported((short) 1);
->>>>>>> e090aa29c06144b215ac4acf02faccdd76b9f008
+
         postRepository.save(post);
         return post;
     }

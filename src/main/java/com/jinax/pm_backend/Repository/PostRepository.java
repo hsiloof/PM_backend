@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecificationExecutor<Post> {
-    Optional<Post> getPostByIdAndIsDeletedEquals(int id, short isDeleted);
+    Optional<Post> getPostByIdAndIsDeletedLessThanEqual(int id, short isDeleted);
 
     List<Post> getPostsByOwnerId(int ownerId);
 
@@ -22,7 +22,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecifi
     @Query(value = "select distinct * from post where post.id in (select post_id from reply where owner_id=?)", nativeQuery = true)
     List<Post> getPostsByReplierIdEquals(int replierId);
 
-    @Query(value = "select * from post where post.owner_id in(select id from user where username like %?1%)", nativeQuery = true)
+    @Query(value = "select * from post where post.owner_id in(select id from user where username like %?1%) and post.is_deleted <=1", nativeQuery = true)
     Page<Post> getPostsByOwnerNameLike(String ownerName, Pageable pageable);
 
     @Query(value = "select * from post order by view_time desc limit 10", nativeQuery = true)
