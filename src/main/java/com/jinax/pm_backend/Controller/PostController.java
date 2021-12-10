@@ -72,9 +72,9 @@ public class PostController {
     public CommonResult<List<Post>> getPostsByOwnerId(@PathVariable("ownerId") int ownerId){
         LOGGER.info("getPostsByOwnerId, ownerId is: {}",ownerId);
         List<Post> posts = postService.getPostsByOwnerId(ownerId);
-        if (posts.size()<=0){
-            return CommonResult.failResult(null,"该用户不存在或未发过帖子");
-        }
+//        if (posts.size()<=0){
+//            return CommonResult.failResult(null,"该用户不存在或未发过帖子");
+//        }
         return CommonResult.successResult(posts,"成功");
     }
 
@@ -84,9 +84,9 @@ public class PostController {
     public CommonResult<List<Post>> getPostsByReplierId(@PathVariable("replierId") int replierId){
         LOGGER.info("getPostsByReplierId, ownerId is: {}",replierId);
         List<Post> posts = postService.getPostsByReplierId(replierId);
-        if (posts.size()<=0){
-            return CommonResult.failResult(null,"该用户不存在或未回复过帖子");
-        }
+//        if (posts.size()<=0){
+//            return CommonResult.failResult(null,"该用户不存在或未回复过帖子");
+//        }
         return CommonResult.successResult(posts,"成功");
     }
 
