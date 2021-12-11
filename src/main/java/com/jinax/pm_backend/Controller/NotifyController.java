@@ -43,11 +43,11 @@ public class NotifyController {
         return CommonResult.successResult(notifies,"获取成功");
     }
 
-    @ApiOperation("获取未读通知")
+    @ApiOperation("获取未读通知数")
     @ResponseBody
     @GetMapping("/unreadNum")
 
-    public CommonResult<Integer> getNotifiesNumByUserIdAndRead(@RequestParam int id){
+    public CommonResult<Integer> getNotifiesNumByUserIdAndUnRead(@RequestParam int id){
         int count= 0;
         Future<Integer> notifiesNum = null;
         try {
@@ -66,7 +66,7 @@ public class NotifyController {
     @ApiOperation("更改通知")
     @ResponseBody
     @PutMapping("")
-    public CommonResult<String> getNotifiesNumByUserIdAndRead(Notify notify){
+    public CommonResult<String> updateNotify(Notify notify){
         Notify saveNotify = notifyService.updateNotify(notify);
         return CommonResult.successResult(null,"更改成功");
     }

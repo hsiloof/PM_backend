@@ -8,10 +8,9 @@ import com.jinax.pm_backend.Service.PostService;
 import com.jinax.pm_backend.Service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +22,7 @@ import java.util.Map;
 @RestController
 @RequestMapping("/ranking")
 public class RankingController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(RankingController.class);
     private PostService postService;
     private TagService tagService;
 
@@ -41,7 +41,8 @@ public class RankingController {
     @ApiOperation("获取附近排名前十的帖子")
     @ResponseBody
     @GetMapping("/post/nearby")
-    public CommonResult<List<Post>> getTopPostsNearby(Double longitude,Double latitude){
+    public CommonResult<List<Post>> getTopPostsNearby(Double longitude, Double latitude){
+        LOGGER.info("getTopPostsNearby, longitude is: {}, latitude is: {}",longitude,latitude);
         return CommonResult.successResult(postService.getTopPostsNearBy(longitude,latitude),"操作成功");
     }
 

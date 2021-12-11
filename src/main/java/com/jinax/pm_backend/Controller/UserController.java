@@ -19,6 +19,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -45,6 +46,7 @@ public class UserController {
         this.userService = userService;
         this.userDetailsService = userDetailsService;
     }
+
 
     @ApiOperation("登录")
     @ResponseBody
@@ -91,6 +93,7 @@ public class UserController {
         return CommonResult.successResult(userById,"成功");
     }
 
+    @Transactional
     @ApiOperation("更新用户信息")
     @ResponseBody
     @PutMapping("/user/update")

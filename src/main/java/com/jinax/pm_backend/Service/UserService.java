@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -44,9 +45,16 @@ public class UserService {
             LOGGER.info("createUser failed, user before create : {}", user);
             throw new InvalidUserException("user invalid");//后续可能不抛异常
         }
+        user.setId(null);
         user.setPw(passwordEncoder.encode(user.getPw()));
         user.setRole((short) 1);
-        User saveUser = userRepository.save(user);
+        User saveUser;
+        try{
+             saveUser = userRepository.save(user);
+        }catch (Exception e){
+            throw new InvalidUserException(e.getMessage());
+        }
+
         LOGGER.info("createUser, user before create : {}, user after create : {}",user,saveUser);
         return saveUser;
     }
@@ -63,11 +71,13 @@ public class UserService {
         return true;
     }
 
+
     public User updateUser(User user) throws InvalidUserException {
         if(user.getId() == null || user.getId() < 0) {
             throw new InvalidUserException("user invalid");//后续可能不抛异常
         }
         User before = userRepository.getOne(user.getId());
+        System.out.println(before.toString());
         if(user.getMail() != null){
             before.setMail(user.getMail());
         }

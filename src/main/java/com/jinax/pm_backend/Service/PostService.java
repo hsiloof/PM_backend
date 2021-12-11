@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 import javax.persistence.criteria.CriteriaBuilder;
@@ -160,6 +161,7 @@ public class PostService {
         return getStringObjectMap(dataList);
     }
 
+    @Transactional
     public Map<String, Object> getPostsByTags(String tagsStr, Integer page, Integer size) {
         String[] tags = tagsStr.split(",");
         List<String> tagList = Arrays.stream(tags).collect(Collectors.toList());
@@ -217,11 +219,7 @@ public class PostService {
 
     public Post reportPost(int id) {
         Post post = getPostById(id);
-<<<<<<< HEAD
         post.setIsDeleted((short)1);
-=======
-        post.setIsReported((short) 1);
->>>>>>> e090aa29c06144b215ac4acf02faccdd76b9f008
         postRepository.save(post);
         return post;
     }

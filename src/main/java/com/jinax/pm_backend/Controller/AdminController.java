@@ -10,6 +10,7 @@ import com.jinax.pm_backend.Service.ReplyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.data.domain.Page;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -30,6 +31,7 @@ public class AdminController {
         this.blockService = blockService;
         this.replyService = replyService;
     }
+    @Transactional
     @ApiOperation("获取被举报的问题")
     @ResponseBody
     @GetMapping("/report/questions")
@@ -42,6 +44,7 @@ public class AdminController {
         map.put("curPage", pageList.getNumber());
         return CommonResult.successResult(map,"成功获取被举报的问题");
     }
+    @Transactional
     @ApiOperation("获取被举报的回答")
     @ResponseBody
     @GetMapping("/report/answers")
@@ -54,6 +57,7 @@ public class AdminController {
         map.put("curPage", pageList.getNumber());
         return CommonResult.successResult(map,"成功获取被举报的回答");
     }
+    @Transactional
     @ApiOperation("获取被举报的评论")
     @ResponseBody
     @GetMapping("/report/comments")
@@ -66,7 +70,7 @@ public class AdminController {
         map.put("curPage", pageList.getNumber());
         return CommonResult.successResult(map,"成功获取被举报的评论");
     }
-
+    @Transactional
     @ApiOperation("更新被举报的问题")
     @ResponseBody
     @PutMapping("/reverseQuestion/{id}")
@@ -74,7 +78,7 @@ public class AdminController {
         postService.updateReportedPost(id,operation);
         return CommonResult.successResult(null,"更新成功");
     }
-
+    @Transactional
     @ApiOperation("更新被举报的回答")
     @ResponseBody
     @PutMapping("/reverseAnswer/{id}")
@@ -82,7 +86,7 @@ public class AdminController {
         blockService.updateBlock(id,operation);
         return CommonResult.successResult(null,"更新成功");
     }
-
+    @Transactional
     @ApiOperation("更新被举报的评论")
     @ResponseBody
     @PutMapping("/reverseComment/{id}")

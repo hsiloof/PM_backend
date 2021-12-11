@@ -43,6 +43,7 @@ public class NotifyService {
         LOGGER.info("getNotifiesByOwnerIdAndHasRead, owner_id : {}, notifies: {}",id,byOwnerId.toString());
         return byOwnerId;
     }
+
     @Async
     public Future<Integer> getNumOfUnreadNotifies(int id) throws InterruptedException {
 

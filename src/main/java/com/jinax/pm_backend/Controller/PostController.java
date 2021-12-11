@@ -43,7 +43,7 @@ public class PostController {
         this.userService = userService;
         this.notifyService = notifyService;
     }
-
+    @Transactional
     @ApiOperation("获取帖子信息")
     @ResponseBody
     @GetMapping("/{postId}")
@@ -66,6 +66,7 @@ public class PostController {
         }
         return CommonResult.successResult(posts,"成功");
     }
+    @Transactional
     @ApiOperation("获取指定用户的的帖子")
     @ResponseBody
     @GetMapping("/owner/{ownerId}")
@@ -77,7 +78,7 @@ public class PostController {
         }
         return CommonResult.successResult(posts,"成功");
     }
-
+    @Transactional
     @ApiOperation("获取指定用户回复的的帖子")
     @ResponseBody
     @GetMapping("/reply/{replierId}")
@@ -90,7 +91,7 @@ public class PostController {
         return CommonResult.successResult(posts,"成功");
     }
 
-
+    @Transactional
     @ApiOperation("获取指定帖子的回复")
     @ResponseBody
     @GetMapping("/answer/{postId}")
@@ -207,6 +208,7 @@ public class PostController {
         return CommonResult.successResult(null,"盖楼成功");
     }
 
+    @Transactional
     @ApiOperation("举报帖子")
     @ResponseBody
     @PutMapping("/question/reported/{postId}")
@@ -214,6 +216,7 @@ public class PostController {
         Post post = postService.reportPost(postId);
         return CommonResult.successResult(null,"举报成功");
     }
+    @Transactional
     @ApiOperation("举报楼")
     @ResponseBody
     @PutMapping("/answer/reported/{blockId}")
@@ -221,6 +224,7 @@ public class PostController {
         Block block = blockService.reportBlock(blockId);
         return CommonResult.successResult(null,"举报成功");
     }
+    @Transactional
     @ApiOperation("举报回复")
     @ResponseBody
     @PutMapping("/comment/reported/{replyId}")

@@ -10,4 +10,7 @@ public interface NotifyRepository extends JpaRepository<Notify,Integer> {
     List<Notify> getNotifiesByOwnerId(int ownerId);
     List<Notify> getNotifiesByOwnerIdAndIsRead(int ownerId, short isRead);
     int countByOwnerIdAndIsRead(int ownerId,short isRead);
+
+    @Override
+    void deleteById(Integer integer);
 }
