@@ -90,6 +90,15 @@ public class PostController {
         return CommonResult.successResult(posts,"成功");
     }
 
+    @ApiOperation("获取随机帖子")
+    @ResponseBody
+    @GetMapping("/random")
+    public CommonResult<Post> getRandomPost(){
+        LOGGER.info("getRandomPost");
+        Post randomPost = postService.getRandomPost();
+        return CommonResult.successResult(randomPost,"成功");
+    }
+
 
     @ApiOperation("获取指定帖子的回复")
     @ResponseBody

@@ -228,4 +228,11 @@ public class PostService {
         postRepository.save(post);
         return post;
     }
+
+    public Post getRandomPost(){
+        Optional<Post> randomPost = postRepository.getRandomPost();
+        Post post = randomPost.orElse(null);
+        LOGGER.info("getRandomPost,  post : {}", randomPost);
+        return post;
+    }
 }

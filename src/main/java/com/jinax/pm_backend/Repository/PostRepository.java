@@ -37,5 +37,7 @@ public interface PostRepository extends JpaRepository<Post, Integer>, JpaSpecifi
     @Transactional
     void updatePost(Integer id, short isDeleted);
 
+    @Query(value = "SELECT * FROM post ORDER BY  RAND() LIMIT 1", nativeQuery = true)
+    Optional<Post> getRandomPost();
 
 }
