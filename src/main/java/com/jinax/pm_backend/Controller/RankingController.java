@@ -8,9 +8,17 @@ import com.jinax.pm_backend.Service.PostService;
 import com.jinax.pm_backend.Service.TagService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+<<<<<<< HEAD
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+=======
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
+>>>>>>> 410ed5165d7794efd2008e8988ea01968ad68735
 
 import java.util.List;
 import java.util.Map;

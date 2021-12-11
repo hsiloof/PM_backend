@@ -73,9 +73,9 @@ public class PostController {
     public CommonResult<List<Post>> getPostsByOwnerId(@PathVariable("ownerId") int ownerId){
         LOGGER.info("getPostsByOwnerId, ownerId is: {}",ownerId);
         List<Post> posts = postService.getPostsByOwnerId(ownerId);
-        if (posts.size()<=0){
-            return CommonResult.failResult(null,"该用户不存在或未发过帖子");
-        }
+//        if (posts.size()<=0){
+//            return CommonResult.failResult(null,"该用户不存在或未发过帖子");
+//        }
         return CommonResult.successResult(posts,"成功");
     }
     @Transactional
@@ -85,13 +85,26 @@ public class PostController {
     public CommonResult<List<Post>> getPostsByReplierId(@PathVariable("replierId") int replierId){
         LOGGER.info("getPostsByReplierId, ownerId is: {}",replierId);
         List<Post> posts = postService.getPostsByReplierId(replierId);
-        if (posts.size()<=0){
-            return CommonResult.failResult(null,"该用户不存在或未回复过帖子");
-        }
+//        if (posts.size()<=0){
+//            return CommonResult.failResult(null,"该用户不存在或未回复过帖子");
+//        }
         return CommonResult.successResult(posts,"成功");
     }
 
+<<<<<<< HEAD
     @Transactional
+=======
+    @ApiOperation("获取随机帖子")
+    @ResponseBody
+    @GetMapping("/random")
+    public CommonResult<Post> getRandomPost(){
+        LOGGER.info("getRandomPost");
+        Post randomPost = postService.getRandomPost();
+        return CommonResult.successResult(randomPost,"成功");
+    }
+
+
+>>>>>>> 410ed5165d7794efd2008e8988ea01968ad68735
     @ApiOperation("获取指定帖子的回复")
     @ResponseBody
     @GetMapping("/answer/{postId}")
