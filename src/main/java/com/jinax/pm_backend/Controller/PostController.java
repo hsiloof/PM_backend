@@ -91,9 +91,6 @@ public class PostController {
         return CommonResult.successResult(posts,"成功");
     }
 
-<<<<<<< HEAD
-    @Transactional
-=======
     @ApiOperation("获取随机帖子")
     @ResponseBody
     @GetMapping("/random")
@@ -104,7 +101,6 @@ public class PostController {
     }
 
 
->>>>>>> 410ed5165d7794efd2008e8988ea01968ad68735
     @ApiOperation("获取指定帖子的回复")
     @ResponseBody
     @GetMapping("/answer/{postId}")

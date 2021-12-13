@@ -226,10 +226,6 @@ public class PostService {
     public Post reportPost(int id) {
         Post post = getPostById(id);
         post.setIsDeleted((short)1);
-<<<<<<< HEAD
-=======
-
->>>>>>> 410ed5165d7794efd2008e8988ea01968ad68735
         postRepository.save(post);
         return post;
     }
