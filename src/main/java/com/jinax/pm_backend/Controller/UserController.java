@@ -62,6 +62,8 @@ public class UserController {
         tokenMap.put("tokenHead", tokenHead);
         MyUserDetails userDetails = (MyUserDetails) userDetailsService.loadUserByUsername(username);
         tokenMap.put("id", String.valueOf(userDetails.getId()));
+        User user = userService.getUserByUserName(username);
+        tokenMap.put("role", String.valueOf(user.getRole()));
         return CommonResult.successResult(tokenMap, "登录成功");
     }
     @ApiOperation("注册")
